@@ -15,7 +15,7 @@ import (
 
 func main() {
 	var conf config.Config
-	if _, err := toml.DecodeFile("configs.toml", &conf); err != nil {
+	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(conf)
@@ -30,14 +30,14 @@ func main() {
 	// defer db.Close()
 
 	router := gin.Default()
-	router.StaticFS("/", http.Dir("static"))
+	router.StaticFS("/static", http.Dir("static"))
 
 	// Attach api
-	api.bind(router.Group(conf.api.prefix))
+	api.bind(router.Group(conf.Api.Prefix))
 
 	// For all other requests, see: react.go.
 	react.bind(router)
 
 	// Start listening
-	router.Run(":" + conf.app.port)
+	router.Run(":3000")
 }

@@ -1,3 +1,5 @@
+package main
+
 import (
 	"unicode"
 	"unicode/utf8"
@@ -27,4 +29,3 @@ func (_ __api__) username(c *gin.Context) {
 		"name":     upperFirst(c.Params.ByName("username")),
 	})
 }
-

@@ -59,13 +59,13 @@ func newDukContext(engine *gin.Engine) *duktape.Context {
 	}
 
 	// test case for superagent
-	vm.EvalString(`
-		print("start ============================================");
-		self.superagent.get('/api/v1/config', function(err, response){
-			console.log("response", err, JSON.stringify(response.body, null, 2));
-		});
-		print("stop =============================================");
-	`)
+	// vm.EvalString(`
+	// 	print("start ============================================");
+	// 	self.superagent.get('/api/v1/config', function(err, response){
+	// 		console.log("response", err, JSON.stringify(response.body, null, 2));
+	// 	});
+	// 	print("stop =============================================");
+	// `)
 
 	return vm
 }
@@ -76,7 +76,8 @@ type __react__ struct {
 }
 
 func (r *__react__) init() {
-	r.pool = newDukPool(conf.duktape.poolSize, r.engine)
+	// FIXME: Use value from config
+	r.pool = newDukPool(5, r.engine)
 }
 
 func (r *__react__) handle(c *gin.Context) {
