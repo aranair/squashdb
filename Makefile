@@ -4,7 +4,7 @@ PID      = .pid
 GO_FILES = $(filter-out bindata.go, $(wildcard *.go))
 STATIC   = $(filter-out static/bundle.js, $(shell find static -type f || true))
 APP      = $(shell find app -type f || true) assets/js/bundle.js
-BUNDLE   = $(wildcard static/assets/js/*.js)
+BUNDLE   = $(wildcard static/js/*.js)
 
 build: bindata.go
 
