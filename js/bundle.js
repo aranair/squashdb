@@ -94,7 +94,7 @@ var App = React.createClass({
     return (
       <html>
         <head>
-          <link rel="stylesheet" href="/static/css/style.css" />
+          <link rel="stylesheet" href="/static/css/main.css" />
           <script src="/static/bundle.js" />
           <title>Go React Example</title>
         </head>
