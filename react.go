@@ -47,7 +47,7 @@ func newDukContext(engine *gin.Engine) *duktape.Context {
 	if err := vm.PevalString(`var self = {}, console = {log:print,warn:print,error:print,info:print}`); err != nil {
 		panic(err.(*duktape.Error).Message)
 	}
-	app, err := Asset("bundle.js")
+	app, err := Asset("js/bundle.js")
 	panicIf(err)
 	if err := vm.PevalString(string(app)); err != nil {
 		panic(err.(*duktape.Error).Message)
