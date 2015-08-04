@@ -2,11 +2,12 @@
 module.exports = {
   entry: './js/bundle.js',
   output: {
-    filename: 'test.js'       
+    filename: './static/js/bundle.js'       
   },
   module: {
     loaders: [
-      { test: /\.js$/, loader: 'babel-loader' }
+      { test: /\.js$/, loader: 'babel-loader' },
+      { test: /\.scss$/, loader: "style!css!sass" }
     ]
   },
   resolve: {
