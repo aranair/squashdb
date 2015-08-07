@@ -15,12 +15,11 @@ Golang + Server-side rendering with Duktape + ReactJS + Webpack
 
 ## Install
 
-```
 - go get github.com/aranair/squashdb
 - cd $GOPATH/src/github.com/aranair/squashdb
 - go get ./...
 - go get -u github.com/jteeuwen/go-bindata/...
 - npm i
-- make
+- make build
+- webpack
 - go run *.go
-```
