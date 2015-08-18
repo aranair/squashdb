@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -44,7 +45,7 @@ loop:
 // Loads bundle.js to context
 func newDukContext(engine *gin.Engine) *duktape.Context {
 	vm := duktape.New()
-	if err := vm.PevalString(`var self = {}, console = {log:print,warn:print,error:print,info:print}`); err != nil {
+	if err := vm.PevalString(`var self = {}; console = {log:print,warn:print,error:print,info:print}`); err != nil {
 		panic(err.(*duktape.Error).Message)
 	}
 	app, err := Asset("js/bundle.js")
@@ -84,7 +85,25 @@ func (r *__react__) handle(c *gin.Context) {
 	var v string
 	vm := r.pool.get()
 	vm.PushGlobalObject()
-	vm.PevalString(`self.React.renderToString(self.App({path:'` + c.Request.URL.Path + `'}));`)
+
+	var jsonString, _ = json.Marshal(gin.H{
+		"players": getPlayers(),
+	})
+	fmt.Println(jsonString)
+	fmt.Println(string(jsonString))
+	vm.PevalString(`
+		var APP_PROPS = '` + string(jsonString) + `';
+	`)
+	vm.PevalString(`
+		console.log('app_props');
+		console.log(APP_PROPS);
+		self.React.renderToString(
+			self.App({
+				path:'` + c.Request.URL.Path + `', 
+				players: APP_PROPS
+			}) 
+		);
+	`)
 	v = vm.SafeToString(-1)
 	vm.Pop()
 	r.pool.put(vm)

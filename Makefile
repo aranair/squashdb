@@ -2,9 +2,9 @@ BIN      = $(GOPATH)/bin
 NODE_BIN = ./node_modules/.bin
 PID      = .pid
 GO_FILES = $(filter-out bindata.go, $(wildcard *.go))
-STATIC   = $(filter-out static/bundle.js, $(shell find static -type f || true))
+STATIC   = $(filter-out static/js/bundle.js, $(shell find static -type f || true))
 APP      = $(shell find app -type f || true) js/bundle.js
-BUNDLE   = $(wildcard static/js/*.js)
+BUNDLE   = static/js/bundle.js
 
 build: bindata.go
 

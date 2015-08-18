@@ -20,8 +20,7 @@ func (api __api__) bind(r *gin.RouterGroup) {
 	r.GET("/players", api.player_index)
 }
 
-func (_ __api__) player_index(c *gin.Context) {
-	// TODO: Query all the players from the db
+func getPlayers() []Player {
 	p1 := Player{
 		Name:  "Bobby Pang",
 		Grade: "B2",
@@ -33,7 +32,13 @@ func (_ __api__) player_index(c *gin.Context) {
 		Club:  "UCSC",
 	}
 	players := []Player{p1, p2}
+	return players
+}
 
+func (_ __api__) player_index(c *gin.Context) {
+	// TODO: Query all the players from the db
+
+	var players = getPlayers()
 	c.JSON(http.StatusOK, gin.H{
 		"players": players,
 	})

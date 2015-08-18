@@ -26,55 +26,65 @@ var MainPage = React.createClass({
 
 var PlayersPage = React.createClass({
   statics: {
-    getPlayers: function(cb) {
-      superagent.get(
-        '/api/v1/players',
-        function(err, res) {
+    fetcData: function(cb) {
+      console.log('fetchData');
+      superagent.get('api/v1/players', function(err, res) {
           cb(err, res ? res.body : null);
-        });
+      });
     }
   },
+
+  // Should set state via props (passed in by server)
   getInitialState: function() {
-    var state;
-    PlayersPage.getPlayers(function(err, res) {
+    console.log('-----');
+    console.log(this.props.players);
+    if (this.props.players) {
       if (typeof state === 'undefined') {
-        state = res
+        state = this.props
       } else {
-        this.setState(res);
+        this.setState(this.props);
       };
-    }.bind(this));
+    }
+    return state;
+    // PlayersPage.fetchData(function(err, res) {
+    //   if (typeof state === 'undefined') {
+    //     state = res
+    //   } else {
+    //     this.setState(res);
+    //   };
+    // }.bind(this));
 
     // Defaults
-    state = state || {
-      players: [
-      {
-        name: "Bobby Pang",
-        grade: "B2",
-        club: "UCSC"
-      }
-      ]
-    };
-    return state;
+    // state = state || {
+    //   players: [{
+    //     name: "Bobby",
+    //     grade: "B2",
+    //     club: "UCSC"
+    //   }]
+    // };
+    // return state;
   },
 
+  // Calls data from API, only gets called client side.
   componentDidMount: function() {
-    PlayersPage.getPlayers(function(err, res) {
-      this.setState(res);
-    }.bind(this));
   },
 
   render: function() {
-    return (
-      <PlayersList data={this.state.players} />
-    );
+    if (this.state.players) {
+      return (
+          <PlayersList players={this.state.players} />
+          );
+    } else {
+      return null;
+    }
   }
 
 });
 
 var PlayersList = React.createClass({
   render: function() {
-    var playersList = this.props.data.map(function(p) {
-      return <Player name={p.name} grade={p.grade} club={p.club} />;
+    var playersList = this.props.players.map(function(p) {
+      return <Player key={p.name} name={p.name} grade={p.grade} club={p.club} />;
     });
     return (
       <div className="players">
@@ -99,56 +109,56 @@ var Player = React.createClass({
   }
 });
 
-var UserPage = React.createClass({
-  statics: {
-    getUserInfo: function(username, cb) {
-      superagent.get(
-        '/api/v1/users/' + username,
-        function(err, res) {
-          cb(err, res ? res.body : null);
-        });
-    }
-  },
+// var UserPage = React.createClass({
+//   statics: {
+//     getUserInfo: function(username, cb) {
+//       superagent.get(
+//         '/api/v1/users/' + username,
+//         function(err, res) {
+//           cb(err, res ? res.body : null);
+//         });
+//     }
+//   },
 
-  getInitialState: function() {
-    var state, username = this.props.username;
-    UserPage.getUserInfo(this.props.username, function(err, res){
-      if (typeof state === 'undefined') {
-        state = res
-      } else {
-        this.setState(res);
-      };
-    }.bind(this));
-    state = state || {
-      username: username,
-      name: username.charAt(0).toUpperCase() + username.slice(1)
-    };
-    return state;
-  },
+//   getInitialState: function() {
+//     var state, username = this.props.username;
+//     UserPage.getUserInfo(this.props.username, function(err, res){
+//       if (typeof state === 'undefined') {
+//         state = res
+//       } else {
+//         this.setState(res);
+//       };
+//     }.bind(this));
+//     state = state || {
+//       username: username,
+//       name: username.charAt(0).toUpperCase() + username.slice(1)
+//     };
+//     return state;
+//   },
 
-  componentWillReceiveProps: function(nextProps) {
-    if (this.props.username !== nextProps.username) {
-      UserPage.getUserInfo(nextProps.username, function(err, info) {
-        if (err) {
-          throw err;
-        }
-        this.setState(info);
-      }.bind(this));
-    }
-  },
+//   componentWillReceiveProps: function(nextProps) {
+//     if (this.props.username !== nextProps.username) {
+//       UserPage.getUserInfo(nextProps.username, function(err, info) {
+//         if (err) {
+//           throw err;
+//         }
+//         this.setState(info);
+//       }.bind(this));
+//     }
+//   },
 
-  render: function() {
-    var otherUser = this.props.username === 'doe' ? 'ivan' : 'doe';
-    return (
-      <div className="UserPage">
-        <h1>Hello, {this.state.name}!</h1>
-        <p>
-          Go to <Link href={"/users/" + otherUser}>/users/{otherUser}</Link>
-        </p>
-      </div>
-    );
-  }
-});
+//   render: function() {
+//     var otherUser = this.props.username === 'doe' ? 'ivan' : 'doe';
+//     return (
+//       <div className="UserPage">
+//         <h1>Hello, {this.state.name}!</h1>
+//         <p>
+//           Go to <Link href={"/users/" + otherUser}>/users/{otherUser}</Link>
+//         </p>
+//       </div>
+//     );
+//   }
+// });
 
 var NotFoundHandler = React.createClass({
 
@@ -164,6 +174,8 @@ var NotFoundHandler = React.createClass({
 var App = React.createClass({
 
   render: function() {
+    console.log('APP ROOOOOT');
+    console.log(this.props.players);
     return (
       <html>
         <head>
@@ -173,7 +185,7 @@ var App = React.createClass({
         </head>
         <Pages className="App" path={this.props.path}>
           <Page path="/" handler={MainPage} />
-          <Page path="/players" handler={PlayersPage} />
+          <Page path="/players" handler={PlayersPage} players={this.props.players}/>
           <NotFound handler={NotFoundHandler} />
         </Pages>
       </html>
@@ -184,7 +196,7 @@ var App = React.createClass({
 module.exports = global.App = App;
 
 if (typeof window !== 'undefined') {
-  window.onload = function() {
-    React.render(<App />, document);
-  }
+  // window.onload = function() {
+  //   React.render(App(window.APP_PROPS), document);
+  // }
 }

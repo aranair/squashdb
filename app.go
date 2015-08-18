@@ -15,6 +15,7 @@ import (
 
 func main() {
 	var conf config.Config
+
 	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
 		log.Fatal(err)
 	}
@@ -39,5 +40,5 @@ func main() {
 	react.bind(router)
 
 	// Start listening
-	router.Run(":3000")
+	router.Run(":5000")
 }
